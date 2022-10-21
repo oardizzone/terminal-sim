@@ -15,6 +15,7 @@ function App() {
   const handleCommandInput = useCallback((input: string) => {
     setTerminalState((draft) => {
       draft.outputs.push(input);
+      draft.history.unshift(input);
     });
   }, []);
 
@@ -31,7 +32,10 @@ function App() {
           </section>
         ))}
       </section>
-      <CommandInput handleSubmit={handleCommandInput} />
+      <CommandInput
+        handleSubmit={handleCommandInput}
+        history={terminalState.history}
+      />
     </section>
   );
 }

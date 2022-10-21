@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 
 interface CommandInputProps {
   handleSubmit: (inputValue: string) => void;
+  history: string[];
 }
 
 export const CommandInput = (props: CommandInputProps) => {
@@ -13,6 +14,7 @@ export const CommandInput = (props: CommandInputProps) => {
   const [focused, setFocused] = useState(true);
   const [caretPos, setCaretPos] = useState(inputRef.current?.selectionStart);
   const [caretPaused, setCaretPaused] = useState(false);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
   const getSelectionCursorPos = (ref: React.RefObject<HTMLInputElement>) => {
     const start = ref.current?.selectionStart;
@@ -21,6 +23,16 @@ export const CommandInput = (props: CommandInputProps) => {
     console.log({ start, end, direction });
 
     return direction === "forward" ? end : start;
+  };
+
+  const traverseHistory = (step: number) => {
+    if (historyIndex + step < 0) return setHistoryIndex(0);
+    if (historyIndex + step >= props.history.length)
+      return setHistoryIndex(props.history.length - 1);
+    setHistoryIndex((prev) => {
+      setValue(props.history[prev + step]);
+      return prev + step;
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +60,19 @@ export const CommandInput = (props: CommandInputProps) => {
 
   const handleInputKeypress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     console.log(e.key);
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault();
+        traverseHistory(1);
+        inputRef.current?.setSelectionRange(value.length, value.length);
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        traverseHistory(-1);
+        inputRef.current?.setSelectionRange(value.length, value.length);
+        break;
+      default:
+    }
   };
 
   useEffect(() => {

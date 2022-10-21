@@ -13,18 +13,6 @@ export const CommandInput = (props: CommandInputProps) => {
   const [focused, setFocused] = useState(true);
   const [caretPos, setCaretPos] = useState(inputRef.current?.selectionStart);
   const [caretPaused, setCaretPaused] = useState(false);
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
-
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    inputRef.current?.setSelectionRange(value.length, value.length);
-    setFocused(true);
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setFocused(false);
-  };
 
   const getSelectionCursorPos = (ref: React.RefObject<HTMLInputElement>) => {
     const start = ref.current?.selectionStart;
@@ -35,14 +23,31 @@ export const CommandInput = (props: CommandInputProps) => {
     return direction === "forward" ? end : start;
   };
 
-  const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    inputRef.current?.setSelectionRange(value.length, value.length);
+    setFocused(true);
+  };
+
+  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocused(false);
+  };
+
+  const handleInputSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
     clearTimeout(caretTimerRef.current);
-    getSelectionCursorPos(inputRef);
     setCaretPos(getSelectionCursorPos(inputRef));
     setCaretPaused(true);
+
     caretTimerRef.current = setTimeout(() => {
       setCaretPaused(false);
     }, CURSOR_SPEED);
+  };
+
+  const handleInputKeypress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(e.key);
   };
 
   useEffect(() => {
@@ -73,7 +78,7 @@ export const CommandInput = (props: CommandInputProps) => {
               : "terminal__input__caret--blurred"
           }
           style={{
-            left: `${getSelectionCursorPos(inputRef) ?? 0}ch`,
+            left: `${caretPos ?? 0}ch`,
             ...(caretPaused && { animation: "none" }),
           }}
         ></div>
@@ -84,9 +89,10 @@ export const CommandInput = (props: CommandInputProps) => {
           onChange={handleInputChange}
           ref={inputRef}
           autoFocus
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onSelect={handleSelect}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          onSelect={handleInputSelect}
+          onKeyDown={handleInputKeypress}
         />
       </section>
     </form>

@@ -5,12 +5,14 @@ interface CommandInputProps {
 }
 
 export const CommandInput = (props: CommandInputProps) => {
+  const CURSOR_SPEED = 800;
   const inputRef = useRef<HTMLInputElement>(null);
+  const caretTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
   const [value, setValue] = useState("");
-  const [showCaret, setShowCaret] = useState(true);
-
   const [focused, setFocused] = useState(true);
-
+  const [caretPos, setCaretPos] = useState(inputRef.current?.selectionStart);
+  const [caretPaused, setCaretPaused] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
@@ -24,15 +26,20 @@ export const CommandInput = (props: CommandInputProps) => {
     setFocused(false);
   };
 
+  const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
+    clearTimeout(caretTimerRef.current);
+    setCaretPos(inputRef.current?.selectionStart);
+    setCaretPaused(true);
+    caretTimerRef.current = setTimeout(() => {
+      setCaretPaused(false);
+    }, CURSOR_SPEED);
+  };
+
   useEffect(() => {
-    if (!focused) return setShowCaret(true);
-    const id = setInterval(() => {
-      setShowCaret((prev) => !prev);
-    }, 800);
     return () => {
-      clearInterval(id);
+      clearTimeout(caretTimerRef.current);
     };
-  }, [focused]);
+  }, []);
 
   return (
     <form
@@ -56,8 +63,8 @@ export const CommandInput = (props: CommandInputProps) => {
               : "terminal__input__caret--blurred"
           }
           style={{
-            left: `${value.length}ch`,
-            opacity: showCaret ? "100%" : "0%",
+            left: `${inputRef.current?.selectionStart ?? 0}ch`,
+            ...(caretPaused && { animation: "none" }),
           }}
         ></div>
         <input
@@ -69,6 +76,7 @@ export const CommandInput = (props: CommandInputProps) => {
           autoFocus
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onSelect={handleSelect}
         />
       </section>
     </form>

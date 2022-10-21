@@ -9,7 +9,6 @@
 }
 
 $color-text-primary: #d0d0d0;
-$color-caret: #a0a0a0;
 $color-background: #000000;
 
 body {
@@ -60,18 +59,31 @@ body {
       width: 1ch;
       position: absolute;
       height: 100%;
+      opacity: 80%;
       mix-blend-mode: difference;
-      background-color: $color-caret;
+      background-color: $color-text-primary;
+      animation: blink 1s steps(1, start) infinite;
 
       &--blurred {
         @extend .terminal__input__caret;
         background-color: $color-background;
-        border: 1px solid $color-caret;
+        border: 1px solid $color-text-primary;
+        animation: none;
       }
     }
 
     &:focus {
       outline: none;
     }
+  }
+}
+
+@keyframes blink {
+  from,
+  to {
+    opacity: 0%;
+  }
+  50% {
+    opacity: 80%;
   }
 }

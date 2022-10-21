@@ -15,7 +15,7 @@ function App() {
   const handleCommandInput = useCallback((input: string) => {
     setTerminalState((draft) => {
       draft.outputs.push(input);
-      if (draft.history[0] === input) return;
+      if (input === "" || draft.history[0] === input) return;
       draft.history.unshift(input);
     });
   }, []);

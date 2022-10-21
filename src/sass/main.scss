@@ -8,11 +8,13 @@
   src: url("./fonts/SourceCodePro-Italic-VariableFont_wght.ttf");
 }
 
-$font-color-primary: #d0d0d0;
+$color-text-primary: #d0d0d0;
+$color-caret: #a0a0a0;
+$color-background: #000000;
 
 body {
-  background-color: #000000;
-  color: $font-color-primary;
+  background-color: $color-background;
+  color: $color-text-primary;
   font-family: "Source Code Pro";
 }
 
@@ -45,8 +47,8 @@ body {
   &__input {
     font-family: "Source Code Pro";
     display: inline;
-    background-color: #000000;
-    color: $font-color-primary;
+    background-color: $color-background;
+    color: $color-text-primary;
     border: none;
     font-size: 1rem;
     padding: 0;
@@ -54,11 +56,18 @@ body {
     caret-color: #00000000;
 
     &__caret {
+      box-sizing: border-box;
       width: 1ch;
       position: absolute;
       height: 100%;
       mix-blend-mode: difference;
-      background-color: $font-color-primary;
+      background-color: $color-caret;
+
+      &--blurred {
+        @extend .terminal__input__caret;
+        background-color: $color-background;
+        border: 1px solid $color-caret;
+      }
     }
 
     &:focus {

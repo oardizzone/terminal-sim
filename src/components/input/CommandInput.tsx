@@ -5,22 +5,34 @@ interface CommandInputProps {
 }
 
 export const CommandInput = (props: CommandInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
   const [showCaret, setShowCaret] = useState(true);
-  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [focused, setFocused] = useState(true);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    inputRef.current?.setSelectionRange(value.length, value.length);
+    setFocused(true);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocused(false);
+  };
+
   useEffect(() => {
+    if (!focused) return setShowCaret(true);
     const id = setInterval(() => {
       setShowCaret((prev) => !prev);
-    }, 1000);
+    }, 800);
     return () => {
       clearInterval(id);
     };
-  }, []);
+  }, [focused]);
 
   return (
     <form
@@ -38,7 +50,11 @@ export const CommandInput = (props: CommandInputProps) => {
       </span>
       <section className="terminal__input-container">
         <div
-          className="terminal__input__caret"
+          className={
+            focused
+              ? "terminal__input__caret"
+              : "terminal__input__caret--blurred"
+          }
           style={{
             left: `${value.length}ch`,
             opacity: showCaret ? "100%" : "0%",
@@ -51,6 +67,8 @@ export const CommandInput = (props: CommandInputProps) => {
           onChange={handleInputChange}
           ref={inputRef}
           autoFocus
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
       </section>
     </form>

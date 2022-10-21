@@ -89,6 +89,7 @@ export const CommandInput = (props: CommandInputProps) => {
         e.preventDefault();
         props.handleSubmit(value);
         setValue("");
+        setHistoryIndex(-1);
         inputRef.current?.scrollIntoView();
       }}
     >

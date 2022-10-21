@@ -8,8 +8,61 @@
   src: url("./fonts/SourceCodePro-Italic-VariableFont_wght.ttf");
 }
 
+$font-color-primary: #d0d0d0;
+
 body {
   background-color: #000000;
-  color: #ffffff;
+  color: $font-color-primary;
   font-family: "Source Code Pro";
+}
+
+.terminal {
+  &__output {
+    &__line {
+      margin-top: 0;
+      margin-bottom: 0;
+      display: flex;
+      gap: 1ch;
+    }
+  }
+
+  &__prompt {
+    &__symbol {
+      color: #00d000;
+    }
+  }
+
+  &__form {
+    display: flex;
+    gap: 1ch;
+  }
+
+  &__input-container {
+    flex-grow: 1;
+    position: relative;
+  }
+
+  &__input {
+    font-family: "Source Code Pro";
+    display: inline;
+    background-color: #000000;
+    color: $font-color-primary;
+    border: none;
+    font-size: 1rem;
+    padding: 0;
+    width: 100%;
+    caret-color: #00000000;
+
+    &__caret {
+      width: 1ch;
+      position: absolute;
+      height: 100%;
+      mix-blend-mode: difference;
+      background-color: $font-color-primary;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
 }

@@ -20,9 +20,17 @@ function App() {
 
   return (
     <section className="terminal">
-      {terminalState.outputs.map((text) => (
-        <p>{text}</p>
-      ))}
+      <section className="terminal__output">
+        {terminalState.outputs.map((text) => (
+          <section className="terminal__output__line">
+            <span className="terminal__prompt">
+              admin@cluster-5937:
+              <span className="terminal__prompt__symbol">~</span>$
+            </span>
+            {text}
+          </section>
+        ))}
+      </section>
       <CommandInput handleSubmit={handleCommandInput} />
     </section>
   );

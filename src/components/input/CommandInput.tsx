@@ -26,9 +26,19 @@ export const CommandInput = (props: CommandInputProps) => {
     setFocused(false);
   };
 
+  const getSelectionCursorPos = (ref: React.RefObject<HTMLInputElement>) => {
+    const start = ref.current?.selectionStart;
+    const end = ref.current?.selectionEnd;
+    const direction = ref.current?.selectionDirection;
+    console.log({ start, end, direction });
+
+    return direction === "forward" ? end : start;
+  };
+
   const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
     clearTimeout(caretTimerRef.current);
-    setCaretPos(inputRef.current?.selectionStart);
+    getSelectionCursorPos(inputRef);
+    setCaretPos(getSelectionCursorPos(inputRef));
     setCaretPaused(true);
     caretTimerRef.current = setTimeout(() => {
       setCaretPaused(false);
@@ -63,7 +73,7 @@ export const CommandInput = (props: CommandInputProps) => {
               : "terminal__input__caret--blurred"
           }
           style={{
-            left: `${inputRef.current?.selectionStart ?? 0}ch`,
+            left: `${getSelectionCursorPos(inputRef) ?? 0}ch`,
             ...(caretPaused && { animation: "none" }),
           }}
         ></div>

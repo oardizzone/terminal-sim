@@ -31,14 +31,6 @@ function App() {
   });
 
   const handleCommandInput = useCallback((input: string) => {
-    if (input !== "" && !validCommands.includes(input)) {
-      return setTerminalState((draft) => {
-        draft.outputs.push(`ERR: command not found: ${input}`);
-        if (input === "" || draft.history[0] === input) return;
-        draft.history.unshift(input);
-      });
-    }
-
     setTerminalState((draft) => {
       draft.outputs.push(input);
       if (input === "" || draft.history[0] === input) return;
